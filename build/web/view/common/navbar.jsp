@@ -14,7 +14,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/product?action=list">Sản Phẩm</a>
                 </li>
-                <%-- Show Categories link only for admin (1) or manager (2) --%>
                 <c:if test="${not empty sessionScope.user && (sessionScope.user.roleInSystem == 1 || sessionScope.user.roleInSystem == 2)}">
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/category?action=list">Danh Mục</a>
@@ -39,6 +38,9 @@
                     <c:otherwise>
                         <li class="nav-item">
                             <span class="nav-link">Chào mừng, <c:out value="${sessionScope.user.firstName}"/>!</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/account?action=profileUpdate">Hồ Sơ</a>
                         </li>
                         <c:if test="${sessionScope.user.roleInSystem == 1}">
                             <li class="nav-item">
