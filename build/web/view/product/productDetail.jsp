@@ -37,7 +37,7 @@
                 <p><strong>Tên Sản Phẩm:</strong> ${product.productName}</p>
                 <p><strong>Mô Tả Ngắn:</strong> ${product.brief}</p>
                 <p><strong>Ngày Đăng:</strong> <fmt:formatDate value="${product.postedDate}" pattern="dd/MM/yyyy"/></p>
-                <p><strong>Loại Sản Phẩm (ID):</strong> ${product.typeId}</p>
+                <p><strong>Loại Sản Phẩm:</strong> ${category != null ? category.categoryName : 'Không xác định'}</p>
                 <p><strong>Người Đăng:</strong> ${product.account}</p>
                 <p><strong>Đơn Vị:</strong> ${product.unit}</p>
                 <p><strong>Giá:</strong> ${product.price} VNĐ</p>

@@ -160,7 +160,8 @@ public class ProductController extends HttpServlet {
         request.setAttribute("selectedTypeId", typeIdParam);
         request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
     }
-//// Get selected category typeId (if any)
+
+    //// Get selected category typeId (if any)
 //    String typeIdParam = request.getParameter("typeId");
 //    List<Product> products;
 //    if (typeIdParam
@@ -194,7 +195,7 @@ public class ProductController extends HttpServlet {
 //    }
 
     // View a specific product
-    private void viewProduct(HttpServletRequest request, HttpServletResponse response)
+private void viewProduct(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String productId = request.getParameter("productId");
         if (productId == null || productId.trim().isEmpty()) {
@@ -208,9 +209,35 @@ public class ProductController extends HttpServlet {
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
+        // Lấy thông tin danh mục từ typeId
+        Category category = categoryDAO.findById(product.getTypeId());
+        if (category == null) {
+            request.setAttribute("error", "Không tìm thấy danh mục cho sản phẩm này");
+        }
+        // Gửi cả product và category sang JSP
         request.setAttribute("product", product);
+        request.setAttribute("category", category);
         request.getRequestDispatcher("/view/product/productDetail.jsp").forward(request, response);
     }
+
+    // View a specific product
+//    private void viewProduct(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        String productId = request.getParameter("productId");
+//        if (productId == null || productId.trim().isEmpty()) {
+//            request.setAttribute("error", "Mã sản phẩm là bắt buộc");
+//            request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
+//            return;
+//        }
+//        Product product = productDAO.findById(productId);
+//        if (product == null) {
+//            request.setAttribute("error", "Không tìm thấy sản phẩm");
+//            request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
+//            return;
+//        }
+//        request.setAttribute("product", product);
+//        request.getRequestDispatcher("/view/product/productDetail.jsp").forward(request, response);
+//    }
 
     // Show create product form (admin only)
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
