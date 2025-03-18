@@ -30,7 +30,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <a href="/view/home.jsp" class="btn btn-primary d-block mx-auto">Back to Home</a>
+        <a href="${pageContext.request.contextPath}/view/home.jsp" class="btn btn-primary d-block mx-auto">Back to Home</a>
     </div>
 </body>
 </html>

@@ -17,7 +17,7 @@
 </head>
 <body>
     <!-- Check if user is admin -->
-    <c:if test="${empty sessionScope.user || sessionScope.user.roleInSystem == 1}">
+    <c:if test="${empty sessionScope.user || sessionScope.user.roleInSystem != 1}">
         <c:redirect url="/auth?action=login"/>
     </c:if>
 
