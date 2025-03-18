@@ -17,7 +17,7 @@ import java.util.logging.Level;
 public class DBUtils {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=ProductIntro";
     private static final String USER = "sa";
-    private static final String PASSWORD = "1234";
+    private static final String PASSWORD = "12345";
 
     public static Connection getConnection() {
         try {
