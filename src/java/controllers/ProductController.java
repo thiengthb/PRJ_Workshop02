@@ -8,7 +8,9 @@ package controllers;
 import dao.implement.ProductDAO;
 import dao.implement.CategoryDAO;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -100,32 +102,96 @@ public class ProductController extends HttpServlet {
 
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Fetch all categories
+// Fetch all categories
         List<Category> categories = categoryDAO.findAll();
         request.setAttribute("categories", categories);
 
         // Debug: Log categories
         System.out.println("Categories fetched: " + (categories != null ? categories.size() : "null"));
 
-        // Get selected category typeId (if any)
+        // Get filter parameters
         String typeIdParam = request.getParameter("typeId");
+        String minPriceParam = request.getParameter("minPrice");
+        String maxPriceParam = request.getParameter("maxPrice");
+        String discountParam = request.getParameter("discount");
+        String sortParam = request.getParameter("sort");
         List<Product> products;
+// Step 1: Filter by category
         if (typeIdParam == null || typeIdParam.equals("all")) {
-            products = productDAO.findAll(); // Show all products
+            products = productDAO.findAll();
         } else {
             try {
                 int typeId = Integer.parseInt(typeIdParam);
-                products = productDAO.findByTypeId(typeId); // Filter by category
+                products = productDAO.findByTypeId(typeId);
             } catch (NumberFormatException e) {
-                products = productDAO.findAll(); // Fallback to all if typeId is invalid
+                products = productDAO.findAll();
                 request.setAttribute("error", "Danh mục không hợp lệ.");
             }
         }
-        request.setAttribute("products", products);
-        request.setAttribute("selectedTypeId", typeIdParam); // For dropdown persistence
 
+        // Step 2: Filter by price range
+        int minPrice = minPriceParam != null && !minPriceParam.isEmpty() ? Integer.parseInt(minPriceParam) : 0;
+        int maxPrice = maxPriceParam != null && !maxPriceParam.isEmpty() ? Integer.parseInt(maxPriceParam) : Integer.MAX_VALUE;
+
+        products = products.stream()
+                .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
+                .collect(Collectors.toList());
+
+        // Step 3: Filter by discount
+        if ("yes".equals(discountParam)) {
+            products = products.stream()
+                    .filter(p -> p.getDiscount() > 0)
+                    .collect(Collectors.toList());
+        } else if ("no".equals(discountParam)) {
+            products = products.stream()
+                    .filter(p -> p.getDiscount() == 0)
+                    .collect(Collectors.toList());
+        }
+
+        // Step 4: Sort by price
+        if ("price_asc".equals(sortParam)) {
+            products.sort(Comparator.comparingInt(Product::getPrice));
+        } else if ("price_desc".equals(sortParam)) {
+            products.sort(Comparator.comparingInt(Product::getPrice).reversed());
+        }
+
+        // Set attributes for JSP
+        request.setAttribute("products", products);
+        request.setAttribute("selectedTypeId", typeIdParam);
         request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
     }
+//// Get selected category typeId (if any)
+//    String typeIdParam = request.getParameter("typeId");
+//    List<Product> products;
+//    if (typeIdParam
+//
+//    == null || typeIdParam.equals ( 
+//        "all")) {
+//            products = productDAO.findAll(); // Show all products
+//    }
+//
+//    
+//        else {
+//            try {
+//            int typeId = Integer.parseInt(typeIdParam);
+//            products = productDAO.findByTypeId(typeId); // Filter by category
+//        } catch (NumberFormatException e) {
+//            products = productDAO.findAll(); // Fallback to all if typeId is invalid
+//            request.setAttribute("error", "Danh mục không hợp lệ.");
+//        }
+//    }
+//
+//    request.setAttribute (
+//
+//    "products", products);
+//    request.setAttribute (
+//
+//    "selectedTypeId", typeIdParam); // For dropdown persistence
+//
+//    request.getRequestDispatcher (
+//
+//"/view/product/productList.jsp").forward(request, response);
+//    }
 
     // View a specific product
     private void viewProduct(HttpServletRequest request, HttpServletResponse response)
