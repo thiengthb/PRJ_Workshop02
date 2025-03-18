@@ -7,27 +7,27 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Trang Chủ</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css" >
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <jsp:include page="/view/common/navbar.jsp"/>
 
     <div class="container">
         <div class="hero mt-4">
-            <h1>Welcome to MyApp</h1>
+            <h1>Chào Mừng Đến Với MyApp</h1>
             <p>
                 <c:choose>
                     <c:when test="${empty sessionScope.user}">
-                        Please login or register to get started!
+                        Vui lòng đăng nhập hoặc đăng ký để bắt đầu!
                     </c:when>
                     <c:otherwise>
-                        Hello, <c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}"/>! Explore our features below.
+                        Xin chào, <c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}"/>! Khám phá các tính năng bên dưới.
                     </c:otherwise>
                 </c:choose>
             </p>
@@ -38,28 +38,31 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Browse Products</h5>
-                        <p class="card-text">Check out our wide range of products.</p>
-                        <a href="${pageContext.request.contextPath}/product?action=list" class="btn btn-primary">Go to Products</a>
+                        <h5 class="card-title">Duyệt Sản Phẩm</h5>
+                        <p class="card-text">Xem danh sách sản phẩm đa dạng của chúng tôi.</p>
+                        <a href="${pageContext.request.contextPath}/product?action=list" class="btn btn-primary">Đi Đến Sản Phẩm</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Explore Categories</h5>
-                        <p class="card-text">View our product categories.</p>
-                        <a href="${pageContext.request.contextPath}/category?action=list" class="btn btn-primary">Go to Categories</a>
+            <%-- Show Categories card only for admin (1) or manager (2) --%>
+            <c:if test="${not empty sessionScope.user && (sessionScope.user.roleInSystem == 1 || sessionScope.user.roleInSystem == 2)}">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Khám Phá Danh Mục</h5>
+                            <p class="card-text">Xem các danh mục sản phẩm của chúng tôi.</p>
+                            <a href="${pageContext.request.contextPath}/category?action=list" class="btn btn-primary">Đi Đến Danh Mục</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </c:if>
             <c:if test="${sessionScope.user.roleInSystem == 1}">
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Manage Accounts</h5>
-                            <p class="card-text">Administer user accounts.</p>
-                            <a href="${pageContext.request.contextPath}/account?action=list" class="btn btn-primary">Go to Accounts</a>
+                            <h5 class="card-title">Quản Lý Tài Khoản</h5>
+                            <p class="card-text">Quản trị tài khoản người dùng.</p>
+                            <a href="${pageContext.request.contextPath}/account?action=list" class="btn btn-primary">Đi Đến Tài Khoản</a>
                         </div>
                     </div>
                 </div>

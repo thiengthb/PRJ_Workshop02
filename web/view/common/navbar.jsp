@@ -14,9 +14,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/product?action=list">Sản Phẩm</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/category?action=list">Danh Mục</a>
-                </li>
+                <%-- Show Categories link only for admin (1) or manager (2) --%>
+                <c:if test="${not empty sessionScope.user && (sessionScope.user.roleInSystem == 1 || sessionScope.user.roleInSystem == 2)}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/category?action=list">Danh Mục</a>
+                    </li>
+                </c:if>
                 <c:if test="${sessionScope.user.roleInSystem == 1}">
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/account?action=list">Tài Khoản</a>

@@ -14,45 +14,14 @@
     <title>Danh Sách Sản Phẩm</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        .card {
-            transition: transform 0.2s;
-            margin-bottom: 20px;
-            width: 100%;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-        }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card-header {
-            background-color: #343a40;
-            color: white;
-            flex-shrink: 0;
-        }
-        .card-body {
-            flex-grow: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .card-img-top {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .card-footer {
-            flex-shrink: 0;
-        }
-        .btn-group {
-            display: flex;
-            gap: 5px;
-        }
-        .category-filter {
-            max-width: 300px;
-            margin: 0 auto;
-        }
+        .card { transition: transform 0.2s; margin-bottom: 20px; width: 100%; height: 400px; display: flex; flex-direction: column; }
+        .card:hover { transform: scale(1.05); }
+        .card-header { background-color: #343a40; color: white; flex-shrink: 0; }
+        .card-body { flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-img-top { width: 100%; height: 200px; object-fit: cover; }
+        .card-footer { flex-shrink: 0; }
+        .btn-group { display: flex; gap: 5px; }
+        .category-filter { max-width: 300px; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -70,11 +39,16 @@
                 <input type="hidden" name="action" value="list">
                 <select name="typeId" class="form-control" onchange="this.form.submit()">
                     <option value="all" ${selectedTypeId == null || selectedTypeId == 'all' ? 'selected' : ''}>Tất Cả</option>
-                    <c:forEach var="category" items="${categories}">
-                        <option value="${category.typeId}" ${selectedTypeId == category.typeId ? 'selected' : ''}>${category.categoryName}</option>
-                    </c:forEach>
+                    <c:if test="${not empty categories}">
+                        <c:forEach var="category" items="${categories}">
+                            <option value="${category.typeId}" ${selectedTypeId == category.typeId.toString() ? 'selected' : ''}>${category.categoryName}</option>
+                        </c:forEach>
+                    </c:if>
                 </select>
             </form>
+            <c:if test="${empty categories}">
+                <div class="alert alert-warning mt-2">Không có danh mục nào được tìm thấy.</div>
+            </c:if>
         </div>
 
         <!-- Add New Product Button -->

@@ -22,35 +22,34 @@ import utils.DBUtils;
  * @author trann
  */
 public class CategoryDAO implements ICategoryDAO {
-    private static final String INSERT_SQL = 
-            "INSERT INTO categories (typeId, categoryName, memo) VALUES (?, ?, ?)";
-    
-    private static final String SELECT_BY_ID_SQL = 
-            "SELECT * FROM categories WHERE typeId = ?";
-    
-    private static final String SELECT_ALL_SQL = 
-            "SELECT * FROM categories";
-    
-    private static final String UPDATE_SQL = 
-            "UPDATE categories SET categoryName = ?, memo = ? WHERE typeId = ?";
-    
-    private static final String DELETE_SQL = 
-            "DELETE FROM categories WHERE typeId = ?";
-    
+
+    private static final String INSERT_SQL
+            = "INSERT INTO categories (categoryName, memo) VALUES (?, ?)";
+
+    private static final String SELECT_BY_ID_SQL
+            = "SELECT * FROM categories WHERE typeId = ?";
+
+    private static final String SELECT_ALL_SQL
+            = "SELECT * FROM categories";
+
+    private static final String UPDATE_SQL
+            = "UPDATE categories SET categoryName = ?, memo = ? WHERE typeId = ?";
+
+    private static final String DELETE_SQL
+            = "DELETE FROM categories WHERE typeId = ?";
+
     @Override
     public void create(Category category) {
         Connection conn = null;
         try {
             conn = DBUtils.getConnection();
             try (PreparedStatement pstmt = conn.prepareStatement(INSERT_SQL)) {
-                pstmt.setInt(1, category.getTypeId());
-                pstmt.setString(2, category.getCategoryName());
-                pstmt.setString(3, category.getMemo());
-                
+                pstmt.setString(1, category.getCategoryName());
+                pstmt.setString(2, category.getMemo());
                 pstmt.executeUpdate();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, "SQL Error: " + ex.getMessage(), ex);
         } finally {
             DBUtils.closeConnection(conn);
         }
@@ -64,7 +63,7 @@ public class CategoryDAO implements ICategoryDAO {
             try (PreparedStatement pstmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
                 pstmt.setInt(1, typeId);
                 ResultSet rs = pstmt.executeQuery();
-                
+
                 if (rs.next()) {
                     return mapResultSetToCategory(rs);
                 }
@@ -84,20 +83,26 @@ public class CategoryDAO implements ICategoryDAO {
         Connection conn = null;
         try {
             conn = DBUtils.getConnection();
-            try (PreparedStatement pstmt = conn.prepareStatement(SELECT_ALL_SQL);
-                 ResultSet rs = pstmt.executeQuery()) {
-                
-                while (rs.next()) {
-                    categories.add(mapResultSetToCategory(rs));
-                }
+            if (conn == null) {
+                Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, "Failed to get database connection");
                 return categories;
             }
+            try (PreparedStatement pstmt = conn.prepareStatement(SELECT_ALL_SQL);
+                    ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Category category = new Category();
+                    category.setTypeId(rs.getInt("typeId"));
+                    category.setCategoryName(rs.getString("categoryName"));
+                    category.setMemo(rs.getString("memo"));
+                    categories.add(category);
+                }
+            }
         } catch (SQLException ex) {
-            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, "SQL Error: " + ex.getMessage(), ex);
         } finally {
             DBUtils.closeConnection(conn);
         }
-        return null;
+        return categories;
     }
 
     @Override
@@ -109,7 +114,7 @@ public class CategoryDAO implements ICategoryDAO {
                 pstmt.setString(1, category.getCategoryName());
                 pstmt.setString(2, category.getMemo());
                 pstmt.setInt(3, category.getTypeId());
-                
+
                 pstmt.executeUpdate();
             }
         } catch (SQLException ex) {
