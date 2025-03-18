@@ -55,23 +55,26 @@
                             <a href="${pageContext.request.contextPath}/account?action=view&accountId=${account.account}" class="btn btn-info btn-sm">Xem</a>
                             <c:if test="${sessionScope.user.roleInSystem == 1}">
                                 <a href="${pageContext.request.contextPath}/account?action=update&accountId=${account.account}" class="btn btn-warning btn-sm">Sửa</a>
-                                <form action="${pageContext.request.contextPath}/account?action=delete" method="post" style="display:inline;">
-                                    <input type="hidden" name="accountId" value="${account.account}">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa tài khoản này không?')">Xóa</button>
-                                </form>
-                                <form action="${pageContext.request.contextPath}/account?action=toggleActive" method="post" style="display:inline;">
-                                    <input type="hidden" name="accountId" value="${account.account}">
-                                    <c:choose>
-                                        <c:when test="${account.isUse}">
-                                            <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Bạn có chắc muốn vô hiệu tài khoản này không?')">Vô Hiệu</button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Bạn có chắc muốn kích hoạt tài khoản này không?')">Kích Hoạt</button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </form>
+                                <c:if test="${not account.admin}">
+                                    <form action="${pageContext.request.contextPath}/account?action=delete" method="post" style="display:inline;">
+                                        <input type="hidden" name="accountId" value="${account.account}">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa tài khoản này không?')">Xóa</button>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/account?action=toggleActive" method="post" style="display:inline;">
+                                        <input type="hidden" name="accountId" value="${account.account}">
+                                        <c:choose>
+                                            <c:when test="${account.isUse}">
+                                                <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Bạn có chắc muốn vô hiệu tài khoản này không?')">Vô Hiệu</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Bạn có chắc muốn kích hoạt tài khoản này không?')">Kích Hoạt</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </form>
+                                </c:if>
                             </c:if>
                         </td>
+
                     </tr>
                 </c:forEach>
             </tbody>
