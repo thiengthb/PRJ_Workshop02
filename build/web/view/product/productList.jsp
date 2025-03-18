@@ -54,7 +54,7 @@
                         <div class="card-footer">
                             <div class="btn-group">
                                 <a href="${pageContext.request.contextPath}/product?action=view&productId=${product.productId}" class="btn btn-info btn-sm">Xem</a>
-                                <c:if test="${sessionScope.user.roleInSystem}">
+                                <c:if test="${sessionScope.user.roleInSystem <= 2}">
                                     <a href="${pageContext.request.contextPath}/product?action=update&productId=${product.productId}" class="btn btn-warning btn-sm">Sửa</a>
                                     <form action="${pageContext.request.contextPath}/product?action=delete" method="post" style="display:inline;">
                                         <input type="hidden" name="productId" value="${product.productId}">

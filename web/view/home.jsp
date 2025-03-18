@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <c:if test="${sessionScope.user.roleInSystem}">
+            <c:if test="${sessionScope.user.roleInSystem == 1}">
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
