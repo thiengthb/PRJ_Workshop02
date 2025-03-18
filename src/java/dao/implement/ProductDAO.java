@@ -39,6 +39,9 @@ public class ProductDAO implements IProductDAO {
     private static final String DELETE_SQL = 
             "DELETE FROM products WHERE productId = ?";
     
+    private static final String SELECT_BY_TYPE_ID = 
+            "SELECT * FROM products WHERE typeId = ?"; // Fixed table name to "products"
+
     @Override
     public void create(Product product) {
         Connection conn = null;
@@ -76,12 +79,11 @@ public class ProductDAO implements IProductDAO {
             conn = DBUtils.getConnection();
             try (PreparedStatement pstmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
                 pstmt.setString(1, productId);
-                ResultSet rs = pstmt.executeQuery();
-                
-                if (rs.next()) {
-                    return mapResultSetToProduct(rs);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return mapResultSetToProduct(rs);
+                    }
                 }
-                return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,18 +101,16 @@ public class ProductDAO implements IProductDAO {
             conn = DBUtils.getConnection();
             try (PreparedStatement pstmt = conn.prepareStatement(SELECT_ALL_SQL);
                  ResultSet rs = pstmt.executeQuery()) {
-                
                 while (rs.next()) {
                     products.add(mapResultSetToProduct(rs));
                 }
-                return products;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             DBUtils.closeConnection(conn);
         }
-        return null;
+        return products;
     }
 
     @Override
@@ -123,9 +123,9 @@ public class ProductDAO implements IProductDAO {
                 pstmt.setString(2, product.getProductImage());
                 pstmt.setString(3, product.getBrief());
                 if (product.getPostedDate() != null) {
-                    pstmt.setDate(5, new java.sql.Date(product.getPostedDate().getTime()));
+                    pstmt.setDate(4, new java.sql.Date(product.getPostedDate().getTime()));
                 } else {
-                    pstmt.setNull(5, java.sql.Types.DATE);
+                    pstmt.setNull(4, java.sql.Types.DATE);
                 }
                 pstmt.setInt(5, product.getTypeId());
                 pstmt.setString(6, product.getAccount());
@@ -133,7 +133,7 @@ public class ProductDAO implements IProductDAO {
                 pstmt.setInt(8, product.getPrice());
                 pstmt.setInt(9, product.getDiscount());
                 pstmt.setString(10, product.getProductId());
-                
+
                 pstmt.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -159,6 +159,28 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
+    @Override
+    public List<Product> findByTypeId(int typeId) {
+        List<Product> products = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DBUtils.getConnection();
+            try (PreparedStatement pstmt = conn.prepareStatement(SELECT_BY_TYPE_ID)) {
+                pstmt.setInt(1, typeId);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        products.add(mapResultSetToProduct(rs));
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            DBUtils.closeConnection(conn);
+        }
+        return products;
+    }
+
     private Product mapResultSetToProduct(ResultSet rs) {
         try {
             Product product = new Product();
@@ -175,7 +197,7 @@ public class ProductDAO implements IProductDAO {
             return product;
         } catch (SQLException ex) {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 }
