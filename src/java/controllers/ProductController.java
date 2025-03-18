@@ -6,6 +6,7 @@
 package controllers;
 
 import dao.implement.ProductDAO;
+import dao.implement.CategoryDAO;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import models.Account;
 import models.Product;
+import models.Category;
 
 /**
  *
@@ -25,10 +27,12 @@ import models.Product;
 public class ProductController extends HttpServlet {
 
     private ProductDAO productDAO;
+    private CategoryDAO categoryDAO;
 
     @Override
     public void init() throws ServletException {
         productDAO = new ProductDAO();
+        categoryDAO = new CategoryDAO(); // Initialize CategoryDAO
     }
 
     @Override
@@ -55,11 +59,11 @@ public class ProductController extends HttpServlet {
                     showUpdateForm(request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action not supported");
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Hành động không được hỗ trợ");
                     break;
             }
         } catch (Exception e) {
-            request.setAttribute("error", "An unexpected error occurred: " + e.getMessage());
+            request.setAttribute("error", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
             request.getRequestDispatcher("/view/error.jsp").forward(request, response);
         }
     }
@@ -85,19 +89,41 @@ public class ProductController extends HttpServlet {
                     deleteProduct(request, response);
                     break;
                 default:
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action not supported");
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Hành động không được hỗ trợ");
                     break;
             }
         } catch (Exception e) {
-            request.setAttribute("error", "An unexpected error occurred: " + e.getMessage());
+            request.setAttribute("error", "Đã xảy ra lỗi không mong muốn: " + e.getMessage());
             request.getRequestDispatcher("/view/error.jsp").forward(request, response);
         }
     }
 
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Product> products = productDAO.findAll();
+        // Fetch all categories
+        List<Category> categories = categoryDAO.findAll();
+        request.setAttribute("categories", categories);
+
+        // Debug: Log categories
+        System.out.println("Categories fetched: " + (categories != null ? categories.size() : "null"));
+
+        // Get selected category typeId (if any)
+        String typeIdParam = request.getParameter("typeId");
+        List<Product> products;
+        if (typeIdParam == null || typeIdParam.equals("all")) {
+            products = productDAO.findAll(); // Show all products
+        } else {
+            try {
+                int typeId = Integer.parseInt(typeIdParam);
+                products = productDAO.findByTypeId(typeId); // Filter by category
+            } catch (NumberFormatException e) {
+                products = productDAO.findAll(); // Fallback to all if typeId is invalid
+                request.setAttribute("error", "Danh mục không hợp lệ.");
+            }
+        }
         request.setAttribute("products", products);
+        request.setAttribute("selectedTypeId", typeIdParam); // For dropdown persistence
+
         request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
     }
 
@@ -106,13 +132,13 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         String productId = request.getParameter("productId");
         if (productId == null || productId.trim().isEmpty()) {
-            request.setAttribute("error", "Product ID is required");
+            request.setAttribute("error", "Mã sản phẩm là bắt buộc");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
         Product product = productDAO.findById(productId);
         if (product == null) {
-            request.setAttribute("error", "Product not found");
+            request.setAttribute("error", "Không tìm thấy sản phẩm");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
@@ -139,13 +165,13 @@ public class ProductController extends HttpServlet {
         }
         String productId = request.getParameter("productId");
         if (productId == null || productId.trim().isEmpty()) {
-            request.setAttribute("error", "Product ID is required");
+            request.setAttribute("error", "Mã sản phẩm là bắt buộc");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
         Product product = productDAO.findById(productId);
         if (product == null) {
-            request.setAttribute("error", "Product not found");
+            request.setAttribute("error", "Không tìm thấy sản phẩm");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
@@ -165,7 +191,7 @@ public class ProductController extends HttpServlet {
         String priceStr = request.getParameter("price");
 
         if (productId == null || productId.trim().isEmpty() || productName == null || productName.trim().isEmpty()) {
-            request.setAttribute("error", "Product ID and name are required");
+            request.setAttribute("error", "Mã sản phẩm và tên sản phẩm là bắt buộc");
             request.getRequestDispatcher("/view/product/productCreate.jsp").forward(request, response);
             return;
         }
@@ -174,7 +200,7 @@ public class ProductController extends HttpServlet {
         try {
             price = Integer.parseInt(priceStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid price format");
+            request.setAttribute("error", "Định dạng giá không hợp lệ");
             request.getRequestDispatcher("/view/product/productCreate.jsp").forward(request, response);
             return;
         }
@@ -201,14 +227,14 @@ public class ProductController extends HttpServlet {
 
         // Validate required fields
         if (productId == null || productId.trim().isEmpty() || productName == null || productName.trim().isEmpty()) {
-            request.setAttribute("error", "Product ID and name are required");
+            request.setAttribute("error", "Mã sản phẩm và tên sản phẩm là bắt buộc");
             request.getRequestDispatcher("/view/product/productUpdate.jsp").forward(request, response);
             return;
         }
 
         Product product = productDAO.findById(productId);
         if (product == null) {
-            request.setAttribute("error", "Product not found");
+            request.setAttribute("error", "Không tìm thấy sản phẩm");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
@@ -218,7 +244,7 @@ public class ProductController extends HttpServlet {
         try {
             price = Integer.parseInt(priceStr);
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid price format");
+            request.setAttribute("error", "Định dạng giá không hợp lệ");
             request.getRequestDispatcher("/view/product/productUpdate.jsp").forward(request, response);
             return;
         }
@@ -239,7 +265,7 @@ public class ProductController extends HttpServlet {
         }
         String productId = request.getParameter("productId");
         if (productId == null || productId.trim().isEmpty()) {
-            request.setAttribute("error", "Product ID is required");
+            request.setAttribute("error", "Mã sản phẩm là bắt buộc");
             request.getRequestDispatcher("/view/product/productList.jsp").forward(request, response);
             return;
         }
@@ -252,9 +278,8 @@ public class ProductController extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             Account user = (Account) session.getAttribute("user");
-            return user != null && user.getRoleInSystem() == 1; // Assuming isRoleInSystem() indicates admin status
+            return user != null && user.getRoleInSystem() == 1; // Admin check
         }
         return false;
     }
-
 }

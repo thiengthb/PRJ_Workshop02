@@ -18,4 +18,5 @@ public interface IProductDAO {
     List<Product> findAll();
     void update(Product product);
     void delete(String productId);
+    List<Product> findByTypeId(int typeId);
 }
