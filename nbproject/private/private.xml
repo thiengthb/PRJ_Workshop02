@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/account/accountDetail.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/controllers/AuthController.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/product/productList.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/controllers/AccountController.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/dao/interfaces/IAccountDAO.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/models/Account.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/home.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/admin/dashboard.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/controllers/ProductController.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/models/Product.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/css/styles.css</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/auth/resetPassword.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/product/productCreate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/category/categoryDetail.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/product/productDetail.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/dao/implement/AccountDAO.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/category/categoryCreate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/category/categoryList.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/account/accountUpdate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/dao/implement/ProductDAO.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/account/accountList.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/product/productUpdate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/error.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/src/java/controllers/CategoryController.java</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/account/accountCreate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/auth/login.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/category/categoryUpdate.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/auth/register.jsp</file>
+            <file>file:/C:/Programming/Java/Workshop02/web/view/common/navbar.jsp</file>
+        </group>
+    </open-files>
+</project-private>
