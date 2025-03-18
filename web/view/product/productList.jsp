@@ -81,6 +81,9 @@
 
                 <button type="submit" class="btn btn-primary mx-2">Lọc</button>
             </form>
+            <c:if test="${empty categories}">
+                <div class="alert alert-warning mt-2">Không có danh mục nào được tìm thấy.</div>
+            </c:if>
         </div>
 
         <!-- Add New Product Button -->
